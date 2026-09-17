@@ -9,7 +9,7 @@ import {
 
 export function NgoDashboard() {
   const { user, logout, updateUser } = useAuth();
-  const [activeTab, setActiveTab] = useState(() => window.location.hash.replace('#', '') || 'dashboard');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [claims, setClaims] = useState([]);
   const [foods, setFoods] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -39,26 +39,6 @@ export function NgoDashboard() {
   // Rate restaurant states
   const [reviewInput, setReviewInput] = useState({ claimId: '', rating: 5, comment: '' });
   const [showReviewModal, setShowReviewModal] = useState(false);
-
-  useEffect(() => {
-    function syncHashTab() {
-      const nextTab = window.location.hash.replace('#', '') || 'dashboard';
-      setActiveTab(nextTab);
-    }
-
-    window.addEventListener('hashchange', syncHashTab);
-    syncHashTab();
-    return () => window.removeEventListener('hashchange', syncHashTab);
-  }, []);
-
-  useEffect(() => {
-    const nextHash = `#${activeTab}`;
-    if (window.location.hash !== nextHash) {
-      window.history.replaceState(null, '', `${window.location.pathname}${nextHash}`);
-    }
-    setMessage('');
-    setError('');
-  }, [activeTab]);
 
   useEffect(() => {
     if (message) {
@@ -264,27 +244,27 @@ export function NgoDashboard() {
         <h2 style={{ fontSize: '14px', fontWeight: '800', textTransform: 'uppercase', color: '#64748b', padding: '0 14px', marginBottom: '16px' }}>
           NGO Panel
         </h2>
-        <a href="#dashboard" onClick={() => setActiveTab('dashboard')} className={activeTab === 'dashboard' ? 'active' : ''}>
+        <button type="button" onClick={() => setActiveTab('dashboard')} className={activeTab === 'dashboard' ? 'active' : ''}>
           <DashboardIcon /> Dashboard
-        </a>
-        <a href="#feed" onClick={() => setActiveTab('feed')} className={activeTab === 'feed' ? 'active' : ''}>
+        </button>
+        <button type="button" onClick={() => setActiveTab('feed')} className={activeTab === 'feed' ? 'active' : ''}>
           <FeedIcon /> Food Feed
-        </a>
-        <a href="#claims" onClick={() => setActiveTab('claims')} className={activeTab === 'claims' ? 'active' : ''}>
+        </button>
+        <button type="button" onClick={() => setActiveTab('claims')} className={activeTab === 'claims' ? 'active' : ''}>
           <ClaimIcon /> My Claims
-        </a>
-        <a href="#reviews" onClick={() => setActiveTab('reviews')} className={activeTab === 'reviews' ? 'active' : ''}>
+        </button>
+        <button type="button" onClick={() => setActiveTab('reviews')} className={activeTab === 'reviews' ? 'active' : ''}>
           <ReviewIcon /> Reviews Given
-        </a>
-        <a href="#notifications" onClick={() => setActiveTab('notifications')} className={activeTab === 'notifications' ? 'active' : ''}>
+        </button>
+        <button type="button" onClick={() => setActiveTab('notifications')} className={activeTab === 'notifications' ? 'active' : ''}>
           <NotificationIcon /> Notifications {notifications.filter(n => !n.is_read).length > 0 && <span style={{ background: '#f97316', color: '#fff', fontSize: '10px', padding: '2px 6px', borderRadius: '50px' }}>{notifications.filter(n => !n.is_read).length}</span>}
-        </a>
-        <a href="#profile" onClick={() => setActiveTab('profile')} className={activeTab === 'profile' ? 'active' : ''}>
+        </button>
+        <button type="button" onClick={() => setActiveTab('profile')} className={activeTab === 'profile' ? 'active' : ''}>
           <ProfileIcon /> Profile
-        </a>
-        <a href="#settings" onClick={() => setActiveTab('settings')} className={activeTab === 'settings' ? 'active' : ''}>
+        </button>
+        <button type="button" onClick={() => setActiveTab('settings')} className={activeTab === 'settings' ? 'active' : ''}>
           <SettingsIcon /> Settings
-        </a>
+        </button>
         <button onClick={logout} style={{ border: 'none', background: 'none', justifyContent: 'flex-start', padding: '12px 14px', width: '100%', color: '#64748b', cursor: 'pointer' }}>
           <LogoutIcon /> Logout
         </button>

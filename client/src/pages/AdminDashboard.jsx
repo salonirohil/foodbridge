@@ -24,8 +24,12 @@ function cloneCms(value) {
 
 export function AdminDashboard() {
   const { logout } = useAuth();
-  const [activeTab, setActiveTab] = useState(() => window.location.hash.replace('#', '') || 'dashboard');
-  const [data, setData] = useState(null);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [data, setData] = useState({
+    cards: { totalRestaurants: 0, totalNgos: 0, totalFoodPosts: 0, foodSavedKg: 0, mealsServed: 0 },
+    weeklyPostedKg: [0, 0, 0, 0, 0, 0, 0],
+    categoryShare: []
+  });
   const [users, setUsers] = useState([]);
   const [foods, setFoods] = useState([]);
   const [claims, setClaims] = useState([]);
@@ -37,26 +41,6 @@ export function AdminDashboard() {
   const [error, setError] = useState('');
   const [activeCmsSection, setActiveCmsSection] = useState('website');
   const [cmsDraft, setCmsDraft] = useState({});
-
-  useEffect(() => {
-    function syncHashTab() {
-      const nextTab = window.location.hash.replace('#', '') || 'dashboard';
-      setActiveTab(nextTab);
-    }
-
-    window.addEventListener('hashchange', syncHashTab);
-    syncHashTab();
-    return () => window.removeEventListener('hashchange', syncHashTab);
-  }, []);
-
-  useEffect(() => {
-    const nextHash = `#${activeTab}`;
-    if (window.location.hash !== nextHash) {
-      window.history.replaceState(null, '', `${window.location.pathname}${nextHash}`);
-    }
-    setMessage('');
-    setError('');
-  }, [activeTab]);
 
   useEffect(() => {
     if (message) {
@@ -658,27 +642,27 @@ export function AdminDashboard() {
         <h2 style={{ fontSize: '14px', fontWeight: '800', textTransform: 'uppercase', color: '#64748b', padding: '0 14px', marginBottom: '16px' }}>
           Admin Console
         </h2>
-        <a href="#dashboard" onClick={() => setActiveTab('dashboard')} className={activeTab === 'dashboard' ? 'active' : ''}>
+        <button type="button" onClick={() => setActiveTab('dashboard')} className={activeTab === 'dashboard' ? 'active' : ''}>
           <DashboardIcon /> Dashboard
-        </a>
-        <a href="#users" onClick={() => setActiveTab('users')} className={activeTab === 'users' ? 'active' : ''}>
+        </button>
+        <button type="button" onClick={() => setActiveTab('users')} className={activeTab === 'users' ? 'active' : ''}>
           <UsersIcon /> Users Manager
-        </a>
-        <a href="#foods" onClick={() => setActiveTab('foods')} className={activeTab === 'foods' ? 'active' : ''}>
+        </button>
+        <button type="button" onClick={() => setActiveTab('foods')} className={activeTab === 'foods' ? 'active' : ''}>
           <FoodIcon /> Food Posts
-        </a>
-        <a href="#claims" onClick={() => setActiveTab('claims')} className={activeTab === 'claims' ? 'active' : ''}>
+        </button>
+        <button type="button" onClick={() => setActiveTab('claims')} className={activeTab === 'claims' ? 'active' : ''}>
           <ClaimIcon /> Claims Feed
-        </a>
-        <a href="#reviews" onClick={() => setActiveTab('reviews')} className={activeTab === 'reviews' ? 'active' : ''}>
+        </button>
+        <button type="button" onClick={() => setActiveTab('reviews')} className={activeTab === 'reviews' ? 'active' : ''}>
           <ReviewIcon /> Reviews Mod
-        </a>
-        <a href="#reports" onClick={() => setActiveTab('reports')} className={activeTab === 'reports' ? 'active' : ''}>
+        </button>
+        <button type="button" onClick={() => setActiveTab('reports')} className={activeTab === 'reports' ? 'active' : ''}>
           <ReportIcon /> Reports & Logs
-        </a>
-        <a href="#cms" onClick={() => setActiveTab('cms')} className={activeTab === 'cms' ? 'active' : ''}>
+        </button>
+        <button type="button" onClick={() => setActiveTab('cms')} className={activeTab === 'cms' ? 'active' : ''}>
           <CmsIcon /> CMS Settings
-        </a>
+        </button>
         <button onClick={logout} style={{ border: 'none', background: 'none', justifyContent: 'flex-start', padding: '12px 14px', width: '100%', color: '#64748b', cursor: 'pointer' }}>
           <LogoutIcon /> Logout
         </button>

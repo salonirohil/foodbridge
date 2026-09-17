@@ -220,7 +220,8 @@ nav a svg {
   background: #f1f5f9;
 }
 
-.admin-sidebar a.active {
+.admin-sidebar a.active,
+.admin-sidebar button.active {
   color: var(--primary);
   background: #f0fdf4;
   font-weight: 600;
