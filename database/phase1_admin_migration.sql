@@ -1,0 +1,96 @@
+USE foodbridge;
+
+SET @sql = IF(
+  NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'account_status'),
+  "ALTER TABLE users ADD COLUMN account_status ENUM('pending', 'active', 'rejected', 'suspended') DEFAULT 'pending'",
+  "SELECT 'account_status exists'"
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql = IF(
+  NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'state'),
+  "ALTER TABLE users ADD COLUMN state VARCHAR(100)",
+  "SELECT 'state exists'"
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql = IF(
+  NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'pin_code'),
+  "ALTER TABLE users ADD COLUMN pin_code VARCHAR(20)",
+  "SELECT 'pin_code exists'"
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql = IF(
+  NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'organization_type'),
+  "ALTER TABLE users ADD COLUMN organization_type VARCHAR(120)",
+  "SELECT 'organization_type exists'"
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql = IF(
+  NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'description'),
+  "ALTER TABLE users ADD COLUMN description TEXT",
+  "SELECT 'description exists'"
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql = IF(
+  NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'profile_image_url'),
+  "ALTER TABLE users ADD COLUMN profile_image_url VARCHAR(500)",
+  "SELECT 'profile_image_url exists'"
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+UPDATE users
+SET account_status = CASE
+  WHEN is_verified = TRUE THEN 'active'
+  ELSE 'pending'
+END
+WHERE account_status IS NULL OR account_status = 'pending';
+
+SET @sql = IF(
+  NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'foods' AND COLUMN_NAME = 'category'),
+  "ALTER TABLE foods ADD COLUMN category VARCHAR(80)",
+  "SELECT 'category exists'"
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql = IF(
+  NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'foods' AND COLUMN_NAME = 'is_unsafe'),
+  "ALTER TABLE foods ADD COLUMN is_unsafe BOOLEAN DEFAULT FALSE",
+  "SELECT 'is_unsafe exists'"
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+CREATE TABLE IF NOT EXISTS reports (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  reporter_id INT NULL,
+  food_id INT NULL,
+  target_user_id INT NULL,
+  reason VARCHAR(255) NOT NULL,
+  status ENUM('open', 'reviewed', 'closed') DEFAULT 'open',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (reporter_id) REFERENCES users(id) ON DELETE SET NULL,
+  FOREIGN KEY (food_id) REFERENCES foods(id) ON DELETE SET NULL,
+  FOREIGN KEY (target_user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS audit_logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  admin_id INT NULL,
+  action VARCHAR(120) NOT NULL,
+  entity_type VARCHAR(80) NOT NULL,
+  entity_id INT NULL,
+  details TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS impact_counter (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  food_saved_kg DECIMAL(12, 2) DEFAULT 0,
+  meals_served INT DEFAULT 0,
+  co2_saved_kg DECIMAL(12, 2) DEFAULT 0,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
