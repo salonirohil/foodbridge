@@ -91,3 +91,6 @@ GET    /api/admin/impact
 - Email reminders for pickup time.
 - Ratings after completed pickup.
 - Charts for monthly food saved and top restaurants.
+
+## Demo link 
+https://salonirohil.github.io/foodbridge/#/
