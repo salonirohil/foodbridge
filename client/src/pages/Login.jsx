@@ -163,6 +163,45 @@ export function Login() {
 
         <button className="primary auth-submit-button">Sign In</button>
 
+        <div style={{ marginTop: '20px', padding: '14px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+          <p style={{ fontSize: '12px', fontWeight: '700', color: '#475569', marginBottom: '10px' }}>⚡ Instant Demo Access (1-Click Preview):</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px' }}>
+            <button
+              type="button"
+              className="button"
+              style={{ padding: '8px', fontSize: '12px', fontWeight: '600' }}
+              onClick={async () => {
+                await login('admin@foodbridge.test', 'admin123');
+                navigate('/admin');
+              }}
+            >
+              👑 Admin
+            </button>
+            <button
+              type="button"
+              className="button"
+              style={{ padding: '8px', fontSize: '12px', fontWeight: '600' }}
+              onClick={async () => {
+                await login('restaurant@foodbridge.test', 'demo123');
+                navigate('/restaurant');
+              }}
+            >
+              🍽️ Restaurant
+            </button>
+            <button
+              type="button"
+              className="button"
+              style={{ padding: '8px', fontSize: '12px', fontWeight: '600' }}
+              onClick={async () => {
+                await login('ngo@foodbridge.test', 'demo123');
+                navigate('/ngo');
+              }}
+            >
+              🤝 NGO
+            </button>
+          </div>
+        </div>
+
         <div className="auth-footnote">
           {!isAdminLogin ? (
             <>
