@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
@@ -16,7 +16,7 @@ import { InfoPage } from './pages/InfoPage';
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -41,7 +41,7 @@ export default function App() {
           <Route path="*" element={<InfoPage type="notfound" />} />
         </Routes>
         <Footer />
-      </BrowserRouter>
+      </HashRouter>
     </AuthProvider>
   );
 }
