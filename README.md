@@ -91,7 +91,3 @@ GET    /api/admin/impact
 - Email reminders for pickup time.
 - Ratings after completed pickup.
 - Charts for monthly food saved and top restaurants.
-
-## Resume Line
-
-Developed a full-stack Food Waste Exchange Platform using React, Node.js, Express, MySQL, JWT authentication, role-based dashboards, real-time food claiming with Socket.io, and live impact analytics.
