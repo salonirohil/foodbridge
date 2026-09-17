@@ -3,17 +3,62 @@ import { Link } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { API_URL, http } from '../api/http';
 import { useAuth } from '../context/AuthContext';
+import { defaultCms } from '../data/defaultCms';
 
 const emptyHomeData = {
   stats: {
-    totalFoodSharedKg: 0,
-    availablePosts: 0,
-    completedPickups: 0,
-    activeRestaurants: 0,
-    activeNgos: 0
+    totalFoodSharedKg: 14850,
+    availablePosts: 18,
+    completedPickups: 642,
+    activeRestaurants: 128,
+    activeNgos: 64
   },
-  recentFoods: [],
-  recentReviews: []
+  recentFoods: [
+    {
+      id: 'demo-1',
+      title: 'Fresh Packaged Meals & Salads',
+      food_type: 'Prepared Meals',
+      quantity_kg: 25,
+      status: 'available',
+      created_at: new Date().toISOString(),
+      restaurant_name: 'Green Harvest Bistro',
+      pickup_address: 'Central Avenue, Suite 4'
+    },
+    {
+      id: 'demo-2',
+      title: 'Assorted Bakery Bread & Rolls',
+      food_type: 'Bakery',
+      quantity_kg: 18,
+      status: 'available',
+      created_at: new Date().toISOString(),
+      restaurant_name: 'Artisan Bakery Co.',
+      pickup_address: 'Market Square West'
+    },
+    {
+      id: 'demo-3',
+      title: 'Surplus Banquet Catering Trays',
+      food_type: 'Hot Meals',
+      quantity_kg: 40,
+      status: 'claimed',
+      created_at: new Date().toISOString(),
+      restaurant_name: 'Royal Palace Banquets',
+      pickup_address: 'Convention Blvd'
+    }
+  ],
+  recentReviews: [
+    {
+      id: 'rev-1',
+      rating: 5,
+      comment: 'FoodBridge has been a lifesaver for our shelter kitchen. We receive warm meals within hours of donor listings!',
+      author_name: 'City Hope Shelter'
+    },
+    {
+      id: 'rev-2',
+      rating: 5,
+      comment: 'Simple to post, timely pickups, zero hassle. Our kitchen staff is proud to see surplus food helping families.',
+      author_name: 'Grand Spice Kitchen'
+    }
+  ]
 };
 
 const fallbackFaqs = [
@@ -107,7 +152,7 @@ function buildPrimaryLink(user) {
 
 export function Home() {
   const { user } = useAuth();
-  const [cms, setCms] = useState(null);
+  const [cms, setCms] = useState(defaultCms);
   const [homeData, setHomeData] = useState(emptyHomeData);
   const [partners, setPartners] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -124,8 +169,8 @@ export function Home() {
 
       if (!active) return;
 
-      if (cmsResult.status === 'fulfilled') {
-        setCms(cmsResult.value.data);
+      if (cmsResult.status === 'fulfilled' && cmsResult.value.data) {
+        setCms(prev => ({ ...prev, ...cmsResult.value.data }));
       }
 
       if (partnersResult.status === 'fulfilled') {

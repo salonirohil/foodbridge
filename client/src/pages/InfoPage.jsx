@@ -1,8 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { http } from '../api/http';
+import { defaultCms } from '../data/defaultCms';
 
 const fallbackContent = {
+  about: {
+    title: 'About FoodBridge',
+    body: 'FoodBridge connects restaurants with surplus food to NGOs that can distribute it safely.'
+  },
+  'how-it-works': {
+    title: 'How FoodBridge Works',
+    body: 'Restaurants post surplus food, NGOs claim it, and pickups are coordinated in real time.'
+  },
+  impact: {
+    title: 'Impact',
+    body: 'Connecting surplus food with communities in need, reducing waste and carbon emissions.'
+  },
+  contact: {
+    title: 'Contact Us',
+    body: 'Reach out to FoodBridge for inquiries, support, or partnership opportunities.'
+  },
   policy: {
     title: 'Platform Food Safety & Quality Policy',
     body: 'Food must be safe, accurately described, and collected before expiry. Users must follow local food safety rules.'
@@ -66,7 +83,7 @@ function parseBulletList(text) {
 }
 
 export function InfoPage({ type }) {
-  const [cms, setCms] = useState(null);
+  const [cms, setCms] = useState(defaultCms);
   const [homeData, setHomeData] = useState(null);
 
   // Contact form state
@@ -77,8 +94,10 @@ export function InfoPage({ type }) {
   useEffect(() => {
     if (['about', 'how-it-works', 'impact', 'contact', 'policy'].includes(type)) {
       http.get('/public/cms')
-        .then(({ data }) => setCms(data))
-        .catch(() => setCms(null));
+        .then(({ data }) => {
+          if (data) setCms(prev => ({ ...prev, ...data }));
+        })
+        .catch(() => setCms(defaultCms));
     }
 
     if (type === 'impact') {
